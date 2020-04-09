@@ -6,11 +6,18 @@ use App\Seller;
 use App\User;
 use Illuminate\Http\Request;
 use App\Product;
+use App\Transformers\SellerTransformer;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class SellerProductsController extends ApiController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->middleware('transform.input:' . SellerTransformer::class)->only(['store' , 'update']);
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -38,10 +45,12 @@ class SellerProductsController extends ApiController
             'quantity' => 'required|integer|min:1',
         ];
 
-        $validation = validator($request->all() , $rules);
-        if($validation->fails()){
-            return $this->errorResponse($validation->errors() , 400);
-        }
+        // $validation = validator($request->all() , $rules);
+        // if($validation->fails()){
+        //     return $this->errorResponse($validation->errors() , 400);
+        // }
+
+        $this->validate($request , $rules);
         $fileName = $this->uploadImage($request);
         $data = $request->all();
         $data['image'] = $fileName;
@@ -76,10 +85,11 @@ class SellerProductsController extends ApiController
             'status' => 'in:' . Product::PRODUCT_UNAVAILABLE . ',' . Product::PRODUCT_AVAILABLE,
         ];
 
-        $validation = validator($request->all(), $rules);
-        if($validation->fails()){
-            return $this->errorResponse($validation->errors() , 400);
-        }
+        // $validation = validator($request->all(), $rules);
+        // if($validation->fails()){
+        //     return $this->errorResponse($validation->errors() , 400);
+        // }
+        $this->validate($request , $rules);
         $this->sellerCheck($seller , $product);
         $product->fill($request->only([
             'name',

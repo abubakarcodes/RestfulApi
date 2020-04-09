@@ -25,6 +25,7 @@ Route::get('user/verify/{token}' , 'UserController@verify')->name('verify');
 Route::get('user/{user}/resend' , 'UserController@resend')->name('resend');
 //buyer routes
 Route::resource('buyer', 'BuyersController' ,['except' => ['create' , 'edit']]);
+Route::resource('buyer.transactions', 'BuyerTransactionsController' ,['only' => ['index']]);
 Route::resource('buyer.products', 'BuyerProductsController' ,['only' => ['index']]);
 Route::resource('buyer.sellers', 'BuyerSellersController' ,['only' => ['index']]);
 Route::resource('buyer.categories', 'BuyerCategoriesController' ,['only' => ['index']]);

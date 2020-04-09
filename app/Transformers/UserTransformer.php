@@ -4,6 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\User;
+
 class UserTransformer extends TransformerAbstract
 {
     /**
@@ -39,13 +40,18 @@ class UserTransformer extends TransformerAbstract
             'isVerified' => (int) $user->verified,
             'creationDate' => (string) $user->created_at,
             'changedDate' =>  (string) $user->updated_at,
-            'deleteDate' => isset($user->deleted_at) ? (string) $user->deleted_at : null
+            'deleteDate' => isset($user->deleted_at) ? (string) $user->deleted_at : null,
+            'links' => [
+                'rel' => 'self',
+                'href' => route('user.show', $user->id)
+            ]
         ];
     }
 
 
 
-    public static function originalAttribute($index){
+    public static function originalAttribute($index)
+    {
         $attributes =  [
             'identifier' =>  'id',
             'name' =>  'name',
@@ -54,7 +60,27 @@ class UserTransformer extends TransformerAbstract
             'isVerified' => 'verified',
             'creationDate' => 'created_at',
             'changedDate' => 'updated_at',
-            'deleteDate' => 'deleted_at'
+            'deleteDate' => 'deleted_at',
+
+        ];
+
+        return isset($attributes[$index]) ? $attributes[$index] : null;
+    }
+
+
+
+    public static function transformedAttribute($index)
+    {
+        $attributes =  [
+            'id' => 'identifier',
+            'name' => 'name',
+            'email' => 'email',
+            'admin' => 'isAdmin',
+            'verified' => 'isVerified',
+            'created_at' => 'creationDate',
+            'updated_at' => 'changedDate',
+            'deleted_at' => 'deleteDate',
+
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

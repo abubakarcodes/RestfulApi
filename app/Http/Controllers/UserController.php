@@ -3,11 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Mail\UserCreated;
+use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Mail;
 class UserController extends ApiController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->middleware('transform.input:' . UserTransformer::class)->only(['store' , 'update']);
+
+    }
 
     /**
      * Display a listing of the resource.
@@ -35,11 +42,11 @@ class UserController extends ApiController
             'password'  => 'required|min:8|confirmed',
         ];
 
-        $validation = validator($request->all() , $rules);
-        if($validation->fails()){
-            return $this->errorResponse($validation->errors() , 400);
-        }
-
+        // $validation = validator($request->all() , $rules);
+        // if($validation->fails()){
+        //     return $this->errorResponse($validation->errors() , 400);
+        // }
+        $this->validate($request , $rules);
         $data = $request->all();
         $data['password'] = bcrypt($request->password);
         $data['verified'] = User::UNVERIFIED_USER;
@@ -80,13 +87,13 @@ class UserController extends ApiController
         ];
 
 
-        $validation = validator($request->all() , $rules);
-        if($validation->fails()){
-            return $this->errorResponse($validation->errors() , 400);
-        }
+        // $validation = validator($request->all() , $rules);
+        // if($validation->fails()){
+        //     return $this->errorResponse($validation->errors() , 400);
+        // }
 
 
-
+        $this->validate($request , $rules);
         if($request->has('name')){
             $user->name = $request->name;
         }

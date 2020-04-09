@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Transformers\CategoryTransformer;
 use Illuminate\Http\Request;
 
 class CategoriesController extends ApiController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->middleware('transform.input:' . CategoryTransformer::class)->only(['store' , 'update']);
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -33,10 +40,11 @@ class CategoriesController extends ApiController
             'description' => 'required',
 
         ];
-        $validation = validator($request->all() , $rules);
-        if($validation->fails()){
-            return $this->errorResponse($validation->errors() , 400);
-        }
+        $this->validate($request , $rules);
+        // $validation = validator($request->all() , $rules);
+        // if($validation->fails()){
+        //     return $this->errorResponse($validation->errors() , 400);
+        // }
 
        $category = Category::create($request->all());
 
