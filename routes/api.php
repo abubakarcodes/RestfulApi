@@ -52,3 +52,6 @@ Route::resource('category.buyers', 'CategoryBuyersController' ,['only' => ['inde
 Route::resource('transaction', 'TransactionsController' ,['only' => ['index' , 'show']]);
 Route::resource('transaction.categories', 'TransactionCategoryController' ,['only' => ['index']]);
 Route::resource('transaction.seller', 'TransactionSellerController' ,['only' => ['index']]);
+
+
+Route::post('oauth/token' , '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');

@@ -6,6 +6,13 @@ use Illuminate\Http\Request;
 use App\Buyer;
 class BuyersController extends ApiController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->middleware('scope:read-general')->only('index');
+        $this->middleware('can:view,buyer')->only('show');
+
+    }
     /**
      * Display a listing of the resource.
      *

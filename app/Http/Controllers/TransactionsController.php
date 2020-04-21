@@ -6,6 +6,12 @@ use App\Transaction;
 
 class TransactionsController extends ApiController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->middleware('scope:read-general')->only('show');
+        $this->middleware('can:view,transaction')->only('show');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,6 +21,8 @@ class TransactionsController extends ApiController
     {
         $transactions = Transaction::all();
         return $this->showAll($transactions);
+
+
     }
 
     /**
