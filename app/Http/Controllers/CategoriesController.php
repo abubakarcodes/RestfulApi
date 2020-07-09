@@ -1,15 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Category;
 use App\Transformers\CategoryTransformer;
 use Illuminate\Http\Request;
-
+use App\Repositories\CategoryRepository;
 class CategoriesController extends ApiController
 {
-    public function __construct()
-    {   $this->middleware('auth:api')->except(['index' , 'show']);
+    public $categoryRespository;
+
+
+    public function __construct(CategoryRepository $categoryRespository)
+    {
+        $this->categoryRespository = $categoryRespository;
+        $this->middleware('auth:api')->except(['index' , 'show']);
         $this->middleware('client.credentials')->only(['index', 'show']);
         $this->middleware('transform.input:' . CategoryTransformer::class)->only(['store' , 'update']);
 
@@ -21,7 +24,7 @@ class CategoriesController extends ApiController
      */
     public function index()
     {
-        $categories = Category::all();
+        $categories = $this->categoryRespository->all();
         return $this->showAll($categories);
     }
 
@@ -46,7 +49,7 @@ class CategoriesController extends ApiController
         //     return $this->errorResponse($validation->errors() , 400);
         // }
 
-       $category = Category::create($request->all());
+       $category = $this->categoryRespository->create($request->all());
 
         return $this->showOne($category , 201);
     }
@@ -57,8 +60,9 @@ class CategoriesController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show($category)
     {
+        $category = $this->categoryRespository->show($category);
         return $this->showOne($category);
     }
 
@@ -69,8 +73,9 @@ class CategoriesController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, $category)
     {
+        $category = $this->categoryRespository->show($category);
         $category->fill($request->only([
             'name',
             'description'
@@ -92,9 +97,9 @@ class CategoriesController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy($category)
     {
-        $category->delete();
+        $category = $this->categoryRespository->delete($category);
         return $this->showOne($category);
     }
 }

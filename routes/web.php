@@ -22,4 +22,3 @@ Route::get('/' ,  function (){
 Route::get('/home/get-tokens' , "HomeController@getTokens")->name('get-tokens');
 Route::get('/home/passport-clients' , "HomeController@getClients")->name('passport-clients');
 Route::get('/home/passport-authorized-clients' , "HomeController@getAuthorizedClients")->name('passport-authorized-clients');
-

@@ -17,7 +17,7 @@ class SellerProductsController extends ApiController
     {
         parent::__construct();
         $this->middleware('transform.input:' . SellerTransformer::class)->only(['store' , 'update']);
-        $this->mddleware('scope:manage-products')->except('index');
+        $this->middleware('scope:manage-products')->except('index');
         $this->middleware('can:view,seller')->only('index');
         $this->middleware('can:sale,seller')->only('store');
         //in the seller policy we use the function editProduct as edit-product
